@@ -1,0 +1,5 @@
+{
+  "name": "MiMejorLuz AI Energy Advisor",
+  "description": "An intelligent web application that uses AI to analyze electricity bill PDFs. Users can upload multiple invoices to receive a detailed comparative analysis, personalized tariff recommendations, and estimated annual savings.",
+  "requestFramePermissions": []
+}
