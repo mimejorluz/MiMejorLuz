@@ -186,10 +186,6 @@ function App() {
   }, []);
 
   const renderContent = () => {
-    if (isLoadingAnalysis) {
-      return <div className="w-full h-full"><LoadingView /></div>;
-    }
-
     switch (activeTab) {
       case 'inicio':
         return <InicioView invoiceCount={invoices.length} onStart={() => setActiveTab('panel')} onOpenSettings={() => setIsSettingsOpen(true)} onOpenThiago={() => setActiveTab('thiago')} todayPrices={todayPrices} />;
@@ -235,44 +231,48 @@ function App() {
 
   return (
     <div className="w-full max-w-6xl mx-auto min-h-screen flex flex-col bg-[#F7F7F7]">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main
-        className="flex-1 w-full flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-24 lg:pb-4"
-      >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="flex-1 flex flex-col"
-          >
-            {renderContent()}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+      {isLoadingAnalysis ? (
+        <LoadingView />
+      ) : (
+        <>
+          <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+          <main className="flex-1 w-full flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-24 lg:pb-4">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex flex-col"
+              >
+                {renderContent()}
+              </motion.div>
+            </AnimatePresence>
+          </main>
 
-      {/* Bottom navigation for mobile/tablet */}
-      <nav className="sticky bottom-0 left-0 right-0 mt-auto bg-[#FCFCFD]/80 backdrop-blur-sm z-30 border-t border-gray-100 lg:hidden">
-        <div style={{paddingBottom: `calc(env(safe-area-inset-bottom, 0px))`}} className="w-full flex justify-around">
-          <TabButton label="Inicio" active={activeTab === 'inicio'} onClick={() => setActiveTab('inicio')} icon={<IconHome className="w-6 h-6" />} />
-          <TabButton label="Panel" active={activeTab === 'panel'} onClick={() => setActiveTab('panel')} icon={<IconDashboard className="w-6 h-6" />} />
-          <TabButton label="Optimizar" active={activeTab === 'optimizar'} onClick={() => setActiveTab('optimizar')} icon={<IconSparkles className="w-6 h-6" />} />
-          <TabButton 
-            label="Thiago" 
-            active={activeTab === 'thiago'} 
-            onClick={() => setActiveTab('thiago')} 
-            icon={
-              <img
-                src="https://storage.googleapis.com/mejorluz-assets-public-2025/avatar-thiago.png"
-                alt="Thiago"
-                className={`w-9 h-9 rounded-full object-cover transition-all ${activeTab === 'thiago' ? "ring-2 ring-[#0F172A]/10" : "opacity-70"}`}
+          {/* Bottom navigation for mobile/tablet */}
+          <nav className="sticky bottom-0 left-0 right-0 mt-auto bg-[#FCFCFD]/80 backdrop-blur-sm z-30 border-t border-gray-100 lg:hidden">
+            <div style={{ paddingBottom: `calc(env(safe-area-inset-bottom, 0px))` }} className="w-full flex justify-around">
+              <TabButton label="Inicio" active={activeTab === 'inicio'} onClick={() => setActiveTab('inicio')} icon={<IconHome className="w-6 h-6" />} />
+              <TabButton label="Panel" active={activeTab === 'panel'} onClick={() => setActiveTab('panel')} icon={<IconDashboard className="w-6 h-6" />} />
+              <TabButton label="Optimizar" active={activeTab === 'optimizar'} onClick={() => setActiveTab('optimizar')} icon={<IconSparkles className="w-6 h-6" />} />
+              <TabButton
+                label="Thiago"
+                active={activeTab === 'thiago'}
+                onClick={() => setActiveTab('thiago')}
+                icon={
+                  <img
+                    src="https://storage.googleapis.com/mejorluz-assets-public-2025/avatar-thiago.png"
+                    alt="Thiago"
+                    className={`w-9 h-9 rounded-full object-cover transition-all ${activeTab === 'thiago' ? "ring-2 ring-[#0F172A]/10" : "opacity-70"}`}
+                  />
+                }
               />
-            } 
-          />
-        </div>
-      </nav>
+            </div>
+          </nav>
+        </>
+      )}
 
       <AnimatePresence>
         {isSettingsOpen && <SettingsModal onClose={() => setIsSettingsOpen(false)} />}

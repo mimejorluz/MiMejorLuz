@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -12,7 +11,7 @@ const Splash: React.FC<SplashProps> = ({ onStart }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2800); // Simula una carga de 2.8 segundos
+        }, 2800); // Artificial loading time
 
         return () => clearTimeout(timer);
     }, []);
@@ -44,34 +43,31 @@ const Splash: React.FC<SplashProps> = ({ onStart }) => {
                     </div>
                 </motion.div>
 
-                {/* Contenedor para la barra de carga y el botón */}
-                <div className="mt-8 h-24 flex flex-col items-center justify-center">
+                {/* Loader o Botón de inicio */}
+                <div className="mt-8 flex flex-col items-center w-full min-h-[60px]">
                     <AnimatePresence mode="wait">
                         {isLoading ? (
                             <motion.div
                                 key="loader"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.3 }}
-                                className="flex flex-col items-center w-full"
+                                className="flex flex-col items-center"
                             >
                                 <div className="loader-track">
                                     <div className="loader-progress"></div>
                                 </div>
-                                <p className="text-[12px] text-[#A2A8AF] mt-3">
-                                    Cargando tus datos de energía…
-                                </p>
+                                <p className="text-xs text-[#AEAEB2] mt-3">Analizando el mercado...</p>
                             </motion.div>
                         ) : (
                             <motion.div
                                 key="button"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.5, delay: 0.2 }}
-                                className="flex flex-col items-center w-full"
                             >
-                                {/* La barra estática se elimina para que no aparezca junto al botón */}
                                 <motion.button
                                     onClick={onStart}
                                     className="w-[220px] h-[46px] bg-[#1D1D1F] text-white font-semibold text-sm rounded-full shadow-lg shadow-gray-400/20"
@@ -88,40 +84,41 @@ const Splash: React.FC<SplashProps> = ({ onStart }) => {
 
             <style>{`
                 .loader-track {
-                    width: 150px;
-                    height: 6px;
-                    background: rgba(255, 255, 255, 0.35);
-                    border: 1px solid rgba(255, 255, 255, 0.4);
+                    width: 180px;
+                    height: 8px;
+                    background: linear-gradient(180deg, #F4F6F9 0%, #E9EDF3 100%);
                     border-radius: 9999px;
                     overflow: hidden;
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.03);
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.05) inset, 0 1px 0 rgba(255,255,255,0.5);
+                    border: 1px solid #D1D9E6;
                 }
 
                 .loader-progress {
                     width: 45%;
                     height: 100%;
-                    background: linear-gradient(90deg, #D4D7DB 0%, #FFFFFF 45%, #D4D7DB 100%);
+                    background: linear-gradient(90deg, #EAEFF5 0%, #FFFFFF 50%, #EAEFF5 100%);
                     border-radius: inherit;
                     position: relative;
-                    animation: mlz-progress 1.4s ease-in-out infinite;
+                    animation: mml-loading-progress 1.4s ease-in-out infinite;
                 }
-
+                
                 .loader-progress::after {
                     content: "";
                     position: absolute;
                     inset: -4px -40px;
-                    background: linear-gradient(120deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 40%);
+                    background: linear-gradient(120deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 40%);
                     transform: rotate(-12deg);
-                    animation: mlz-shine 1.6s linear infinite;
+                    animation: mml-loading-shine 1.6s linear infinite;
+                    opacity: 0.9;
                 }
 
-                @keyframes mlz-progress {
+                @keyframes mml-loading-progress {
                     0% { transform: translateX(-70%); }
                     50% { transform: translateX(-10%); }
                     100% { transform: translateX(110%); }
                 }
 
-                @keyframes mlz-shine {
+                @keyframes mml-loading-shine {
                     0% { transform: translateX(-40%) rotate(-12deg); }
                     100% { transform: translateX(120%) rotate(-12deg); }
                 }

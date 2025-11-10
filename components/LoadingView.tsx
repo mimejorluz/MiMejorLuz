@@ -1,75 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-const loadingMessages = [
-    { text: "Preparando tus datos...", duration: 5000 },
-    { text: "Consultando a la IA...", duration: 10000 },
-    { text: "Calculando recomendaciones...", duration: 15000 }
-];
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export const LoadingView: React.FC = () => {
-    const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-
-    useEffect(() => {
-        const scheduleNextMessage = (index: number) => {
-            if (index >= loadingMessages.length) return; // Stop when out of messages
-            
-            const { duration } = loadingMessages[index];
-            const timer = setTimeout(() => {
-                setCurrentMessageIndex(prev => prev + 1);
-            }, duration);
-
-            return () => clearTimeout(timer);
-        };
-        
-        scheduleNextMessage(currentMessageIndex);
-
-    }, [currentMessageIndex]);
-
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-b from-[#F4F5F7] to-white p-4"
-            style={{
-                paddingTop: 'env(safe-area-inset-top)',
-                paddingBottom: 'env(safe-area-inset-bottom)',
-                paddingLeft: 'env(safe-area-inset-left)',
-                paddingRight: 'env(safe-area-inset-right)',
-            }}
+            // Centrado en el centro y fondo a pantalla completa
+            className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-b from-[#EDEEEF] via-[#F7F7F7] to-white p-4"
         >
-            <img 
-                src="https://storage.googleapis.com/mejorluz-assets-public-2025/logo.png" 
-                alt="Generando análisis..." 
-                className="w-24 h-auto"
-            />
-            
-            <h3 className="text-xl font-semibold text-[#0F172A] mt-6">Generando tu Panel de Ahorro…</h3>
-            
-            <div className="h-10 mt-1">
-                <AnimatePresence mode="wait">
-                    <motion.p
-                        key={currentMessageIndex}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.4, ease: 'easeInOut' }}
-                        className="text-sm text-[#6E6E73] max-w-xs text-center"
-                    >
-                        {loadingMessages[currentMessageIndex]?.text || "Finalizando..."}
-                    </motion.p>
-                </AnimatePresence>
+            <div className="flex flex-col items-center text-center w-full max-w-xs">
+                {/* Logo oficial de la marca, según lo solicitado. */}
+                <img
+                    src="https://storage.googleapis.com/mejorluz-assets-public-2025/logo.png"
+                    alt="Logo MiMejorLuz"
+                    className="w-24 h-auto"
+                />
+                
+                <h3 className="text-xl font-semibold text-[#0F172A] mt-6">
+                    Generando tu Panel de Ahorro…
+                </h3>
+
+                <p className="text-sm text-[#6E6E73] mt-2">
+                    Consultando a la IA...
+                </p>
+                
+                {/* Barra de carga con efecto plateado */}
+                <div className="mt-8">
+                    <div className="loader-track">
+                        <div className="loader-progress"></div>
+                    </div>
+                </div>
             </div>
 
-            <div className="loader-track mt-8">
-                <div className="loader-progress"></div>
-            </div>
-
+            {/* Estilos copiados de Splash.tsx para la barra de carga */}
             <style>{`
                 .loader-track {
                     width: 180px;
-                    height: 8px;
+                    height: 6px; /* Ajustado para ser más delgado como en la imagen */
                     background: linear-gradient(180deg, #F4F6F9 0%, #E9EDF3 100%);
                     border-radius: 9999px;
                     overflow: hidden;

@@ -23,9 +23,6 @@ const SavingsCard: React.FC<{ analysis: ComparativeAnalysis }> = ({ analysis }) 
     const analysisDate = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
     return (
         <div className="bg-white rounded-2xl p-5 text-center flex flex-col justify-center shadow-sm border border-black/5">
-            <div className="absolute top-4 right-4 text-[var(--accent-main)]">
-                <IconSparkles className="w-6 h-6" />
-            </div>
             <p className="font-semibold text-sm text-[#6E6E73]">Ahorro anual estimado</p>
             <div className="flex items-center justify-center gap-2 text-[#1D1D1F]">
                 <AnimatedNumber value={analysis.estimatedAnnualSavingEur} className="text-4xl lg:text-5xl font-bold tracking-tighter" />
@@ -115,9 +112,18 @@ export const MiPanelView: React.FC<MiPanelViewProps> = ({ analysis, invoices, on
                         <h1 className="text-2xl font-bold text-[#1D1D1F] tracking-tight">Tu Panel de Ahorro</h1>
                         <p className="text-sm text-[#6E6E73]">Este es el resultado de tu análisis personalizado.</p>
                     </div>
-                    <button onClick={onOpenSettings} className="p-2 rounded-full hover:bg-gray-200 transition-colors">
-                        <IconSettings className="w-5 h-5 text-gray-500" />
-                    </button>
+                    <div className="flex items-center flex-shrink-0 gap-2">
+                        <button
+                            onClick={() => onExplain('Resumen del Panel de Ahorro')}
+                            className="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-amber-100 text-amber-800 hover:bg-amber-200 transition-colors"
+                        >
+                            <IconSparkles className="w-3.5 h-3.5" />
+                            Explicar
+                        </button>
+                        <button onClick={onOpenSettings} className="p-2 rounded-full hover:bg-gray-200 transition-colors">
+                            <IconSettings className="w-5 h-5 text-gray-500" />
+                        </button>
+                    </div>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

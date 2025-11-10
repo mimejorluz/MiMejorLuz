@@ -207,6 +207,18 @@ const FileUploadView: React.FC<{
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) onFiles(e.target.files);
     };
+    
+    const getHelperText = () => {
+        if (doneFilesCount < 3) {
+            const needed = 3 - doneFilesCount;
+            return `Sube ${needed} factura${needed > 1 ? 's' : ''} más para analizar (mín. 3).`;
+        }
+        if (doneFilesCount > 12) {
+            const extra = doneFilesCount - 12;
+            return `Has subido ${extra} de más. Elimina alguna para continuar (máx. 12).`;
+        }
+        return `¡Perfecto! Con ${doneFilesCount} facturas podemos hacer un análisis detallado.`;
+    };
 
     return (
         <div className="flex flex-col h-full p-1">
@@ -229,17 +241,14 @@ const FileUploadView: React.FC<{
                 </AnimatePresence>
                 {invoiceFiles.length === 0 && (
                     <div className="h-full flex flex-col items-center justify-center text-center">
-                        <p className="text-sm text-[#AEAEB2]">Sube una o más facturas para empezar.</p>
+                        <p className="text-sm text-[#AEAEB2]">Sube entre 3 y 12 facturas para empezar.</p>
                     </div>
                 )}
             </div>
 
             {doneFilesCount > 0 && (
                  <div className="text-center text-xs text-gray-500 py-2 border-t border-[#E4E4E7] mt-2">
-                    {doneFilesCount >= 3 
-                        ? "¡Genial! Ya podemos generar un análisis preciso." 
-                        : `Sugerencia: sube ${3 - doneFilesCount} factura(s) más para mejorar la precisión.`
-                    }
+                    {getHelperText()}
                 </div>
             )}
         </div>
@@ -294,17 +303,25 @@ export const AnalizarView: React.FC<AnalizarViewProps> = ({ invoiceFiles, invoic
     };
 
     const doneFilesCount = useMemo(() => invoices.length, [invoices]);
-    const canStartAnalysis = doneFilesCount > 0;
-
-    const handleManualSubmit = (data: ManualData) => {
-        onManualAnalysis(data);
-    };
+    const canStartAnalysis = useMemo(() => doneFilesCount >= 3 && doneFilesCount <= 12, [doneFilesCount]);
 
     const buttonText = useMemo(() => {
         if (activeTab === 'manual') return 'Analizar mis datos';
-        if (canStartAnalysis) return `Analizar ${doneFilesCount} factura${doneFilesCount > 1 ? 's' : ''}`;
-        return 'Sube una factura para empezar';
-    }, [activeTab, canStartAnalysis, doneFilesCount]);
+        
+        if (doneFilesCount === 0) {
+            return 'Sube entre 3 y 12 facturas';
+        }
+        if (doneFilesCount < 3) {
+            const needed = 3 - doneFilesCount;
+            return `Sube ${needed} más para analizar`;
+        }
+        if (doneFilesCount > 12) {
+            const extra = doneFilesCount - 12;
+            return `Elimina ${extra} para continuar`;
+        }
+        // This is for 3 <= doneFilesCount <= 12
+        return `Analizar ${doneFilesCount} factura${doneFilesCount > 1 ? 's' : ''}`;
+    }, [activeTab, doneFilesCount]);
 
     return (
         <div className="flex flex-col h-full">
@@ -320,7 +337,7 @@ export const AnalizarView: React.FC<AnalizarViewProps> = ({ invoiceFiles, invoic
                 </div>
             </header>
             
-            <div className="flex-1 overflow-y-auto mt-4 space-y-4" style={{paddingBottom: 'calc(10rem + env(safe-area-inset-bottom, 0px))'}}>
+            <div className="flex-1 overflow-y-auto mt-4 space-y-4">
                 <ContextCard />
 
                 <div className="relative flex items-center bg-[#E5E5EA] p-1 rounded-full m-1 shrink-0">
@@ -362,17 +379,17 @@ export const AnalizarView: React.FC<AnalizarViewProps> = ({ invoiceFiles, invoic
                                 </button>
                             </motion.div>
                         ) : (
-                            <ManualEntryForm onManualAnalysis={handleManualSubmit} />
+                            // FIX: Pass the 'onManualAnalysis' prop from AnalizarView's props instead of the undefined 'handleManualSubmit'.
+                            <ManualEntryForm onManualAnalysis={onManualAnalysis} />
                         )}
                     </div>
                 </div>
             </div>
 
-            {/* Sticky Action Button */}
-            <div className="absolute bottom-0 left-0 right-0 bg-[#F7F7F7]/80 backdrop-blur-sm pt-3 px-4 sm:px-6 lg:px-8 border-t border-gray-200/80 z-20"
-                style={{paddingBottom: `calc(env(safe-area-inset-bottom, 12px) + 72px)`}}
+            {/* Action Button */}
+            <div className="shrink-0 bg-[#F7F7F7]/95 backdrop-blur-sm pt-3 px-4 sm:px-6 lg:px-8 border-t border-gray-200/80"
+                 style={{paddingBottom: `calc(env(safe-area-inset-bottom, 12px) + 12px)`}}
             >
-                 
                 <motion.button
                     onClick={activeTab === 'upload' ? onStartAnalysis : () => {
                         const form = document.querySelector('form');
@@ -385,7 +402,6 @@ export const AnalizarView: React.FC<AnalizarViewProps> = ({ invoiceFiles, invoic
                 >
                     {buttonText}
                 </motion.button>
-               
             </div>
         </div>
     );
