@@ -18,15 +18,15 @@ const KPI: React.FC<{ label: string; value: string; subvalue: string; className?
 );
 
 const getBarColor = (price: number, min: number, range: number): string => {
-    if (range <= 0) return '#C7F2D0'; // Fallback to cheap color
+    if (range <= 0) return 'linear-gradient(180deg, #10B981 0%, #059669 100%)';
     const normalized = (price - min) / range;
 
     if (normalized < 0.33) {
-        return '#C7F2D0'; // Cheap (soft green)
+        return 'linear-gradient(180deg, #10B981 0%, #059669 100%)';
     } else if (normalized < 0.66) {
-        return '#FFDFA3'; // Medium (pastel gold)
+        return 'linear-gradient(180deg, #F59E0B 0%, #D97706 100%)';
     } else {
-        return '#F9C3BF'; // Expensive (soft red/salmon)
+        return 'linear-gradient(180deg, #EF4444 0%, #DC2626 100%)';
     }
 };
 
@@ -35,17 +35,18 @@ const Bar: React.FC<{ point: PricePoint; minPrice: number; priceRange: number; o
     const color = getBarColor(point.priceEurKWh, minPrice, priceRange);
 
     return (
-        <div 
-            className="flex-1 h-full flex flex-col justify-end items-center"
+        <div
+            className="flex-1 h-full flex flex-col justify-end items-center group cursor-pointer"
             onMouseEnter={() => onHover(point)}
             onMouseLeave={() => onHover(null)}
         >
             <motion.div
                 initial={{ height: '0%' }}
-                animate={{ height: `${Math.max(1, heightPercent)}%` }}
+                animate={{ height: `${Math.max(2, heightPercent)}%` }}
+                whileHover={{ scaleY: 1.05, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.5, ease: 'easeOut' }}
-                style={{ backgroundColor: color }}
-                className="w-full rounded-t-sm"
+                style={{ background: color }}
+                className="w-full rounded-t-md shadow-sm group-hover:shadow-md transition-all"
             />
         </div>
     );
@@ -78,12 +79,18 @@ export const HourlyPriceChart: React.FC<HourlyPriceChartProps> = ({ priceData: d
                     ))}
                 </div>
                  {hoveredPoint && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-lg pointer-events-none whitespace-nowrap"
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                        className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-[#1D1D1F]/95 backdrop-blur-sm text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xl pointer-events-none whitespace-nowrap border border-white/10 mb-2"
                     >
-                        {hourES(hoveredPoint.time)} - {fmtNum(hoveredPoint.priceEurKWh, '€', 5)}
+                        <div className="flex flex-col items-center gap-0.5">
+                            <span>{hourES(hoveredPoint.time)}</span>
+                            <span className="text-[#FFC700] font-bold">{fmtNum(hoveredPoint.priceEurKWh, '€/kWh', 4)}</span>
+                        </div>
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-1 w-2 h-2 bg-[#1D1D1F]/95 transform rotate-45" />
                     </motion.div>
                 )}
             </div>
@@ -95,10 +102,28 @@ export const HourlyPriceChart: React.FC<HourlyPriceChartProps> = ({ priceData: d
                 <span>23h</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100">
-                 <KPI label="Más Barato" value={hourES(data.bestHour.time)} subvalue={fmtNum(data.bestHour.priceEurKWh, '€/kWh', 4)} className="bg-green-50" isCompact={isCompact} />
-                 <KPI label="Precio Medio" value={fmtNum(data.averagePriceEurKWh, '€/kWh', 4)} subvalue="Hoy" isCompact={isCompact} />
-                 <KPI label="Más Caro" value={hourES(data.worstHour.time)} subvalue={fmtNum(data.worstHour.priceEurKWh, '€/kWh', 4)} className="bg-red-50" isCompact={isCompact} />
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100">
+                 <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <KPI label="Más Barato" value={hourES(data.bestHour.time)} subvalue={fmtNum(data.bestHour.priceEurKWh, '€/kWh', 4)} className="bg-green-50/80 border border-green-100 rounded-lg p-3" isCompact={isCompact} />
+                </motion.div>
+                 <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <KPI label="Precio Medio" value={fmtNum(data.averagePriceEurKWh, '€/kWh', 4)} subvalue="Hoy" className="bg-gray-50/80 border border-gray-100 rounded-lg p-3" isCompact={isCompact} />
+                </motion.div>
+                 <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    <KPI label="Más Caro" value={hourES(data.worstHour.time)} subvalue={fmtNum(data.worstHour.priceEurKWh, '€/kWh', 4)} className="bg-red-50/80 border border-red-100 rounded-lg p-3" isCompact={isCompact} />
+                </motion.div>
             </div>
         </div>
     );

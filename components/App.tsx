@@ -252,8 +252,8 @@ function App() {
           </main>
 
           {/* Bottom navigation for mobile/tablet */}
-          <nav className="sticky bottom-0 left-0 right-0 mt-auto bg-[#FCFCFD]/80 backdrop-blur-sm z-30 border-t border-gray-100 lg:hidden">
-            <div style={{ paddingBottom: `calc(env(safe-area-inset-bottom, 0px))` }} className="w-full flex justify-around">
+          <nav className="sticky bottom-0 left-0 right-0 mt-auto bg-white/80 backdrop-blur-xl z-30 border-t border-gray-200/50 shadow-lg lg:hidden">
+            <div style={{ paddingBottom: `calc(env(safe-area-inset-bottom, 0px))` }} className="w-full flex justify-around px-2">
               <TabButton label="Inicio" active={activeTab === 'inicio'} onClick={() => setActiveTab('inicio')} icon={<IconHome className="w-6 h-6" />} />
               <TabButton label="Panel" active={activeTab === 'panel'} onClick={() => setActiveTab('panel')} icon={<IconDashboard className="w-6 h-6" />} />
               <TabButton label="Optimizar" active={activeTab === 'optimizar'} onClick={() => setActiveTab('optimizar')} icon={<IconSparkles className="w-6 h-6" />} />
@@ -262,10 +262,11 @@ function App() {
                 active={activeTab === 'thiago'}
                 onClick={() => setActiveTab('thiago')}
                 icon={
-                  <img
+                  <motion.img
                     src="https://storage.googleapis.com/mejorluz-assets-public-2025/avatar-thiago.png"
                     alt="Thiago"
-                    className={`w-9 h-9 rounded-full object-cover transition-all ${activeTab === 'thiago' ? "ring-2 ring-[#0F172A]/10" : "opacity-70"}`}
+                    className={`w-8 h-8 rounded-full object-cover transition-all border ${activeTab === 'thiago' ? "ring-2 ring-[#FFC700] border-[#FFC700]" : "border-gray-200 opacity-70"}`}
+                    whileHover={{ scale: 1.1 }}
                   />
                 }
               />

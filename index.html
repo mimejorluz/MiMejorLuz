@@ -13,13 +13,28 @@
         /* Paleta de Marca MiMejorLuz */
         --bg-main: #F7F7F7;
         --text-main: #1D1D1F;
-        --text-secondary: #6E6E73;
+        --text-secondary: #5E5E63;
         --accent-main: #FFC700;
+        --accent-hover: #FFDB4D;
+        --accent-pressed: #E6B300;
+        --accent-light: #FFF8E1;
         --ui-gray: #E5E5EA;
         --ui-gray-secondary: #AEAEB2;
+        --ui-gray-light: #F5F5F5;
         --brand-corporate: #002B5B;
         --premium-accent: #BF9B30;
+
+        /* Sombras mejoradas */
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.14);
+
+        /* Estados de superficie */
+        --surface-hover: #FAFAFA;
+        --surface-pressed: #F0F0F0;
       }
+
       body {
         font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         color: var(--text-main);
@@ -27,30 +42,116 @@
         min-height: 100vh;
         display: flex;
         justify-content: center;
+        line-height: 1.6;
       }
-      
+
       /* Tipografía Fluida */
-      h1 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
-      h2 { font-size: clamp(1.1rem, 2.8vw, 1.35rem); }
-      h3 { font-size: clamp(1rem, 2.5vw, 1.15rem); }
-      p, div, span, button, a, li { font-size: clamp(0.875rem, 2.2vw, 1rem); }
-      small, .text-sm { font-size: clamp(0.8rem, 2vw, 0.875rem); }
-      .text-xs { font-size: clamp(0.72rem, 1.8vw, 0.75rem); }
-      
-      /* Scrollbar styling for better aesthetics */
+      h1 {
+        font-size: clamp(1.25rem, 3vw, 1.75rem);
+        line-height: 1.2;
+        font-weight: 700;
+      }
+      h2 {
+        font-size: clamp(1.1rem, 2.8vw, 1.35rem);
+        line-height: 1.2;
+        font-weight: 600;
+      }
+      h3 {
+        font-size: clamp(1rem, 2.5vw, 1.15rem);
+        line-height: 1.2;
+        font-weight: 600;
+      }
+      p, div, span, button, a, li {
+        font-size: clamp(0.875rem, 2.2vw, 1rem);
+        line-height: 1.6;
+      }
+      small, .text-sm {
+        font-size: clamp(0.8rem, 2vw, 0.875rem);
+        line-height: 1.5;
+      }
+      .text-xs {
+        font-size: clamp(0.72rem, 1.8vw, 0.75rem);
+        line-height: 1.4;
+      }
+      .text-2xs {
+        font-size: clamp(0.65rem, 1.6vw, 0.7rem);
+        line-height: 1.4;
+      }
+
+      /* Focus visible para accesibilidad */
+      *:focus-visible {
+        outline: 3px solid var(--accent-main);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+
+      /* Scrollbar mejorado */
       ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
       }
       ::-webkit-scrollbar-thumb {
         background: var(--ui-gray-secondary);
         border-radius: 10px;
+        transition: background 0.2s ease;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #8e8e93;
       }
       ::-webkit-scrollbar-track {
         background: var(--ui-gray);
+      }
+
+      /* Animaciones */
+      @keyframes shimmer {
+        0%, 100% {
+          background-position: 200% 0;
+        }
+        50% {
+          background-position: -200% 0;
+        }
+      }
+
+      .animate-shimmer {
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+      }
+
+      @keyframes pulse-subtle {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      .animate-pulse-subtle {
+        animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* Smooth transitions */
+      * {
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      button, a, input, select, textarea {
+        transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        transition-duration: 200ms;
       }
     </style>
   <script type="importmap">
